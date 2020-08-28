@@ -7,23 +7,15 @@ services:
                         - "8843:8443"
                         - "8880:8080"
                 links:
-                        - mongo
-                        - mysqldata
-                        - mariadbdata
+                        - postgresids
                         - postgresdata
                         - rserver
                 environment:
                         - OPAL_ADMINISTRATOR_PASSWORD=password
-                        - MONGO_HOST=mongo
-                        - MONGO_PORT=27017
-                        - MYSQLDATA_DATABASE=opal
-                        - MYSQLDATA_HOST=mysqldata
-                        - MYSQLDATA_USER=opal
-                        - MYSQLDATA_PASSWORD=password
-                        - MARIADBDATA_DATABASE=opal
-                        - MARIADBDATA_HOST=mariadbdata
-                        - MARIADBDATA_USER=opal
-                        - MARIADBDATA_PASSWORD=password
+                        - POSTGRESIDS_DATABASE=opal
+                        - POSTGRESIDS_HOST=postgresids
+                        - POSTGRESIDS_USER=opal
+                        - POSTGRESIDS_PASSWORD=password
                         - POSTGRESDATA_DATABASE=opal
                         - POSTGRESDATA_HOST=postgresdata
                         - POSTGRESDATA_USER=opal
@@ -31,22 +23,12 @@ services:
                         - RSERVER_HOST=rserver
                 volumes:
                         - /tmp/test-opal:/srv
-        mongo:
-                image: mongo
-        mysqldata:
-                image: mysql:5
+        postgresids:
+                image: postgres
                 environment:
-                        - MYSQL_DATABASE=opal
-                        - MYSQL_ROOT_PASSWORD=password
-                        - MYSQL_USER=opal
-                        - MYSQL_PASSWORD=password
-        mariadbdata:
-                image: mariadb
-                environment:
-                        - MYSQL_DATABASE=opal
-                        - MYSQL_ROOT_PASSWORD=password
-                        - MYSQL_USER=opal
-                        - MYSQL_PASSWORD=password
+                        - POSTGRES_DB=opal
+                        - POSTGRES_USER=opal
+                        - POSTGRES_PASSWORD=password
         postgresdata:
                 image: postgres
                 environment:
@@ -57,3 +39,14 @@ services:
                 image: obiba/opal-rserver:latest
                 volumes:
                         - /tmp/rserver:/srv
+        keycloak:
+                image: jboss/keycloak
+                environment:
+                        KEYCLOAK_USER: admin
+                        KEYCLOAK_PASSWORD: password
+                ports:
+                        - 8080:8080
+                volumes:
+                        - ./imports:/opt/jboss/keycloak/imports
+                command: 
+                        - "-b 0.0.0.0 -Dkeycloak.import=/opt/jboss/keycloak/imports/realm-export.json"
