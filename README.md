@@ -35,6 +35,14 @@ The \<service-name> is the one used in the docker-compose.
 - click on "Sign in with Keycloak"
 - enter the credentials test/test
 
+### Query data from Opal
+
+opal data test.CNSIM3 --opal https://localhost:8843 --user administrator --password password --id 999
+
+or 
+
+opal rest /datasource/test/table/CNSIM3/valueSet/999 --opal https://localhost:8843 --user administrator --password password --json
+
 ---
 ## Configurations before the first usage
   - [Configure Keycloak](#configure-keycloak)
@@ -90,3 +98,8 @@ This seem to be an already [known issue](https://github.com/obiba/opal/issues/35
 
 ### Configure your local machine
 - Add `0.0.0.0 keycloak` to /etc/hosts
+
+### Fix Postgres issues:
+
+remove locks
+https://jaketrent.com/post/find-kill-locks-postgres/

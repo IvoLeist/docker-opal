@@ -47,6 +47,6 @@ services:
                 ports:
                         - 8080:8080
                 volumes:
-                        - ./imports:/opt/jboss/keycloak/imports
+                        - ./keycloak_imports:/opt/jboss/keycloak/imports
                 command: 
-                        - "-b 0.0.0.0 -Dkeycloak.import=/opt/jboss/keycloak/imports/realm-export.json"
+                    - "-b 0.0.0.0 -Dkeycloak.import=/opt/jboss/keycloak/imports/opal_realm-export.json"
