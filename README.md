@@ -2,7 +2,7 @@ Docker Opal
 ===========
 
 This fork uses PostgreSQL as identifiers/storage database
-and KeyCloak as an identity provider.
+and Keycloak as an identity provider.
 
 The only difference to the [main repo](https://github.com/obiba/docker-opal/)
 is the docker-compose.yml and the imports folder for Keycloak.
@@ -61,10 +61,21 @@ a series of R libraries that enables the non-disclosive co-analysis of distribut
 
 try it out:
 
-- attach a shell to the container: docker-opal_rdsclient
-- navigate into: /opt/datashield/
-  - opiba-opal demo: ```Rscript test_dsRessources_obiba-opal.R```
-  - local-opal: ```Rscript test_ds_local-opal.R```
+- obiba-opal demo
+  - attach a shell to the container: docker-opal_rdsclient
+  - execute:  `Rscript /opt/datashield/test_dsRessources_obiba-opal`  
+
+- local-opal
+  - [open a  Opal session by signing in with Keycloak as the user test](##Use-opal)
+  - add a personal access token with ticked on "Use DataSHIELD"
+  - Copy the access token and paste it into `test_ds_local-opal.R`
+  - attach a shell to the container: docker-opal_rdsclient
+  - execute: `Rscript /opt/datashield/test_ds_local-opal.R`
+
+    \* works as expected if the user is created by Opal, but unfortunately not if the user is created by Keycloak 
+    
+    `Error: Client error: (403) Forbidden`
+
 
 ---
 ## Configurations before the first usage
@@ -93,27 +104,44 @@ try it out:
   *`client_secret` is in Clients > Opal > Credentials
 
 ### Configure Opal
-- connect to https://localhost:8843
-- log in with the credentials administrator/password
-- navigate to Administration > Database
-- add the two databases:
-    - Driver:PostgreSQL
-    - Url: 
-      - jdbc:postgresql://postgresids:5432/opal
-      - jdbc:postgresql://postgresdata:5432/opal
-    - Username: opal
-    - Password: password
-- navigate to Administration > General Settings
-  - set Public URL to https://localhost:8843
-- navigate to Administration > Identity Providers
-- add KeyCloak as ID provider:
-    - Name: Keycloak
-    - Client ID: opal
-    - Client Secret: Get it from Keycloak (Clients > Opal > Credentials)
-    - Discovery URI: http://keycloak:8080/auth/realms/opal/.well-known/openid-configuration
-    - Groups Claim: groups
-- navigate to Administration > DataSHIELD
-- add the group permission "Use DataSHIELD services" to opal-users
+1. connect to https://localhost:8843
+2. log in with the credentials administrator/password
+
+- add the databases
+  - navigate to Administration > Database
+  - add the two databases:
+      - Driver:PostgreSQL
+      - Url: 
+        - jdbc:postgresql://postgresids:5432/opal
+        - jdbc:postgresql://postgresdata:5432/opal
+      - Username: opal
+      - Password: password
+
+- change the public url
+  - navigate to Administration > General Settings
+    - set Public URL to https://localhost:8843
+
+- add Keycloak
+  - navigate to Administration > Identity Providers
+  - add Keycloak as ID provider:
+      - Name: Keycloak
+      - Client ID: opal
+      - Client Secret: Get it from Keycloak (Clients > Opal > Credentials)
+      - Discovery URI: http://keycloak:8080/auth/realms/opal/.well-known/openid-configuration
+      - Groups Claim: groups
+
+- add example data
+  - navigate to Projects
+  - add a project called test with the Database "postgresdb"
+  - navigate to Files/projects/test and upload the CSVs from data/examples
+
+- add permissions
+  - navigate to Tables/Permissions
+  - add group permission "View dictionary and values of all tables" to /opal-users (! mind the "/")
+
+- add DataSHIELD
+  - navigate to Administration > DataSHIELD
+  - add the group permission "Use DataSHIELD services" to opal-users
 
 ! relog and check if under Adminstration > Profiles the group opal-users is set.
 

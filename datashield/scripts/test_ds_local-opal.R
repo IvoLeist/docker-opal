@@ -4,8 +4,7 @@ library(dsBaseClient)
 # prepare login data and resources to assign
 builder <- DSI::newDSLoginBuilder()
 builder$append(server = "study1", url = "https://localhost:8843", user = "administrator", password = "password", table = "test.CNSIM1", driver = "OpalDriver", options="list(ssl_verifyhost=0,ssl_verifypeer=0)")
-#builder$append(server = "study2", url = "https://localhost:8843", user = "test", password = "test", table = "test.CNSIM3", driver = "OpalDriver", options="list(ssl_verifyhost=0,ssl_verifypeer=0)")
-builder$append(server = "study3", url = "https://localhost:8843", token = "UBqzlt0SV7W6J1eW783YifhVKUFHvctk", table = "test.CNSIM3", driver = "OpalDriver", options="list(ssl_verifyhost=0,ssl_verifypeer=0)")
+builder$append(server = "study2", url = "https://localhost:8843", token = "<getItFromOpal", table = "test.CNSIM3", driver = "OpalDriver", options="list(ssl_verifyhost=0,ssl_verifypeer=0)")
 logindata <- builder$build()
 
 # login and assign resources
