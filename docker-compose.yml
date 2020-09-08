@@ -48,5 +48,8 @@ services:
                         - 8080:8080
                 volumes:
                         - ./keycloak_imports:/opt/jboss/keycloak/imports
-                command: 
-                    - "-b 0.0.0.0 -Dkeycloak.import=/opt/jboss/keycloak/imports/opal_realm-export.json"
+                command: ['-b','0.0.0.0','-Dkeycloak.import=/opt/jboss/keycloak/imports/opal_realm-export.json']
+        rdsclient:
+                build: ./datashield
+                volumes: 
+                        - ./datashield/scripts:/opt/datashield/

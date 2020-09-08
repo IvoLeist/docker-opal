@@ -2,16 +2,16 @@ Docker Opal
 ===========
 
 This fork uses PostgreSQL as identifiers/storage database
-and KeyCloak as an identity provider
+and KeyCloak as an identity provider.
 
 The only difference to the [main repo](https://github.com/obiba/docker-opal/)
-is the docker-compose.yml and the imports folder for KeyCloak.
+is the docker-compose.yml and the imports folder for Keycloak.
 
 All the necessary changes to support PostgreSQL have been implemented in the main repo.
 
-Issues helping me to configure it:\
-See:https://github.com/obiba/docker-opal/issues/13
-See:https://github.com/obiba/docker-opal/issues/14
+Issues in obiba/docker-opal which helped me to configure it: 
+[#13](https://github.com/obiba/docker-opal/issues/13) 
+[#14](https://github.com/obiba/docker-opal/issues/14)
 
 ---
 
@@ -30,18 +30,41 @@ docker-compose start <service-name>
 ```
 The \<service-name> is the one used in the docker-compose.
 
-### Use Opal 
+## Use Opal 
 - connect to https://localhost:8843
 - click on "Sign in with Keycloak"
 - enter the credentials test/test
 
-### Query data from Opal
+## Query data from Opal
 
+### By using the opal-python-client
+
+[documentation](http://opaldoc.obiba.org/en/latest/python-user-guide/index.html) / [repo](https://github.com/obiba/opal-python-client)
+
+requirements: python 2.x must be installed on the system
+
+try it out:
+
+```
 opal data test.CNSIM3 --opal https://localhost:8843 --user administrator --password password --id 999
-
+```
 or 
-
+```
 opal rest /datasource/test/table/CNSIM3/valueSet/999 --opal https://localhost:8843 --user administrator --password password --json
+```
+
+### By using dataSHIELD
+
+a series of R libraries that enables the non-disclosive co-analysis of distributed sensitive research data
+
+[documentation](http://opaldoc.obiba.org/en/latest/r-user-guide/datashield.html) / [repo](https://github.com/datashield)
+
+try it out:
+
+- attach a shell to the container: docker-opal_rdsclient
+- navigate into: /opt/datashield/
+  - opiba-opal demo: ```Rscript test_dsRessources_obiba-opal.R```
+  - local-opal: ```Rscript test_ds_local-opal.R```
 
 ---
 ## Configurations before the first usage
@@ -89,6 +112,8 @@ opal rest /datasource/test/table/CNSIM3/valueSet/999 --opal https://localhost:88
     - Client Secret: Get it from Keycloak (Clients > Opal > Credentials)
     - Discovery URI: http://keycloak:8080/auth/realms/opal/.well-known/openid-configuration
     - Groups Claim: groups
+- navigate to Administration > DataSHIELD
+- add the group permission "Use DataSHIELD services" to opal-users
 
 ! relog and check if under Adminstration > Profiles the group opal-users is set.
 
@@ -98,8 +123,10 @@ This seem to be an already [known issue](https://github.com/obiba/opal/issues/35
 
 ### Configure your local machine
 - Add `0.0.0.0 keycloak` to /etc/hosts
+--- 
+
+## Debugging
 
 ### Fix Postgres issues:
 
-remove locks
-https://jaketrent.com/post/find-kill-locks-postgres/
+- remove locks: https://jaketrent.com/post/find-kill-locks-postgres/
