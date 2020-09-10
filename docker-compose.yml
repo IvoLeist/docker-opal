@@ -1,8 +1,8 @@
 version: '3'
 services:
         opal:
-                image: obiba/opal:snapshot
-                #build: .
+                #image: obiba/opal:snapshot
+                build: .
                 ports:
                         - "8843:8443"
                         - "8880:8080"

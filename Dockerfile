@@ -8,7 +8,7 @@ FROM obiba/docker-gosu:latest AS gosu
 
 FROM maven:3.5.4-slim AS building
 
-ENV OPAL_BRANCH master
+# ENV OPAL_BRANCH master
 
 SHELL ["/bin/bash", "-c"]
 
@@ -16,7 +16,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends devscripts debhelper build-essential fakeroot git
 
 WORKDIR /projects
-RUN git clone https://github.com/obiba/opal.git
+RUN git clone https://github.com/ivoLeist/opal.git
 
 WORKDIR /projects/opal
 
@@ -29,7 +29,11 @@ FROM openjdk:8-jdk-stretch AS server
 ENV OPAL_ADMINISTRATOR_PASSWORD password
 ENV OPAL_HOME /srv
 ENV OPAL_DIST /usr/share/opal
-ENV JAVA_OPTS "-Xms1G -Xmx2G -XX:MaxPermSize=256M -XX:+UseG1GC"
+#ENV JAVA_OPTS "-Xms1G -Xmx2G -XX:MaxPermSize=256M -XX:+UseG1GC"
+
+# to enable remote debugging:
+# https://medium.com/swlh/remote-debugging-a-java-application-running-in-docker-container-with-intellij-idea-efe54cd77f02
+ENV JAVA_OPTS "-Xms1G -Xmx2G -XX:MaxPermSize=256M -XX:+UseG1GC -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n"
 
 ENV SEARCH_ES_VERSION=1.0.0
 ENV VCF_STORE_VERSION=1.0.2
@@ -55,13 +59,13 @@ RUN apt-get update && \
 COPY --from=gosu /usr/local/bin/gosu /usr/local/bin/
 
 # Install Opal Python Client
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https unzip
+# RUN DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https unzip
 
-RUN \
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 379CE192D401AB61 && \
-    echo 'deb https://dl.bintray.com/obiba/deb all main' | tee /etc/apt/sources.list.d/obiba.list && \
-    apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y opal-python-client
+# RUN \
+#     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 379CE192D401AB61 && \
+#     echo 'deb https://dl.bintray.com/obiba/deb all main' | tee /etc/apt/sources.list.d/obiba.list && \
+#     apt-get update && \
+#     DEBIAN_FRONTEND=noninteractive apt-get install -y opal-python-client
 
 # Plugins dependencies
 WORKDIR /projects
