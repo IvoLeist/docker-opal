@@ -1,6 +1,10 @@
 Docker Opal
 ===========
 
+This branch does not use [obiba/opal](https://github.com/obiba/opal) for building but [ivoLeist/opal](https://github.com/ivoLeist/opal)
+
+----
+
 This fork uses PostgreSQL as identifiers/storage database
 and Keycloak as an identity provider.
 
