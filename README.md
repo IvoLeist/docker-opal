@@ -150,7 +150,8 @@ If not: close Opal and `docker-compose restart opal`
 This seem to be an already [known issue](https://github.com/obiba/opal/issues/3531)
 
 ### Configure your local machine
-- Add `0.0.0.0 keycloak` to /etc/hosts
+- Add `0.0.0.0  keycloak` to /etc/hosts
+- Add `0.0.0.0  opal` to /etc/hosts 
 --- 
 
 ## Debugging
