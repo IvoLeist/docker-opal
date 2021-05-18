@@ -31,16 +31,16 @@ ENV OPAL_HOME /srv
 ENV OPAL_DIST /usr/share/opal
 ENV JAVA_OPTS "-Xms1G -Xmx2G -XX:MaxPermSize=256M -XX:+UseG1GC"
 
-ENV SEARCH_ES_VERSION=1.0.0
+ENV SEARCH_ES_VERSION=1.1.0
 ENV VCF_STORE_VERSION=1.0.2
 ENV SAMTOOLS_VERSION=1.4
-ENV LIMESURVEY_PLUGIN_VERSION=1.1.0
-ENV REDCAP_PLUGIN_VERSION=1.1.1
-ENV SPSS_PLUGIN_VERSION=1.1.1
-ENV READR_PLUGIN_VERSION=1.1.0
-ENV READXL_PLUGIN_VERSION=1.1.0
-ENV GOOGLESHEETS_PLUGIN_VERSION=1.0.0
-ENV VALIDATE_PLUGIN_VERSION=1.0.1
+ENV LIMESURVEY_PLUGIN_VERSION=1.2.0
+ENV REDCAP_PLUGIN_VERSION=1.2.0
+ENV SPSS_PLUGIN_VERSION=1.2.0
+ENV READR_PLUGIN_VERSION=1.2.0
+ENV READXL_PLUGIN_VERSION=1.2.0
+ENV GOOGLESHEETS_PLUGIN_VERSION=1.1.0
+ENV VALIDATE_PLUGIN_VERSION=1.1.0
 ENV SAMTOOLS_VERSION 1.4
 ENV HTSDIR /projects/htslib
 ENV SAMDIR /projects/samtools-$SAMTOOLS_VERSION
@@ -55,13 +55,15 @@ RUN apt-get update && \
 COPY --from=gosu /usr/local/bin/gosu /usr/local/bin/
 
 # Install Opal Python Client
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https unzip
+RUN \
+  apt-get update && \
+  DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https unzip curl
 
 RUN \
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 379CE192D401AB61 && \
-    echo 'deb https://dl.bintray.com/obiba/deb all main' | tee /etc/apt/sources.list.d/obiba.list && \
-    apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y opal-python-client
+  curl -fsSL https://www.obiba.org/assets/obiba-pub.pem | apt-key add - && \
+  echo 'deb https://obiba.jfrog.io/artifactory/debian-local all main' | tee /etc/apt/sources.list.d/obiba.list && \
+  apt-get update && \
+  DEBIAN_FRONTEND=noninteractive apt-get install -y opal-python-client
 
 # Plugins dependencies
 WORKDIR /projects
